@@ -10,7 +10,7 @@ export interface ITodoListProps {
     authorId: string
 }
 
-export function TodoList({ getRequest }: { getRequest: boolean }) {
+export function TodoList({ getRequest, handleRequest }: { getRequest: boolean, handleRequest: () =>void }) {
     const session = useSession()
     const [todo, setTodo] = React.useState<ITodoListProps[]>([])
     const [loading, setLoading] = React.useState(false)
@@ -43,8 +43,7 @@ export function TodoList({ getRequest }: { getRequest: boolean }) {
     const deleteTodo = async (id: string) => {
         const res = await instance.delete(`todo/${id} `)
         console.log(res.data.message);
-        location.reload()
-
+        handleRequest()
     }
 
     return (

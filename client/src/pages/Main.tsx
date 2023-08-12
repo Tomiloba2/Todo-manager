@@ -16,17 +16,20 @@ export default function Main() {
     authorId: session?.currentUser?.rest.id
   })
   const [getRequest, setGetRequest] = React.useState(false)
+  const handleRequest=()=>{
+    if (!getRequest) {
+      setGetRequest(true)
+    } else if (getRequest) {
+      setGetRequest(false)
+    }
+  }
   const clock = useClock()
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     instance.post(`todo`, inputTodo)
       .then((res) => {
         console.log(res.data);
-        if (!getRequest) {
-          setGetRequest(true)
-        } else if (getRequest) {
-          setGetRequest(false)
-        }
+        handleRequest()
       }).catch(error => {
         if (error?.response) {
           console.log(error.response.data);
@@ -68,12 +71,13 @@ export default function Main() {
                   type="text"
                   placeholder='Tasks list'
                   value={inputTodo.content}
-                  onChange={(e) => setInputTodo({ ...inputTodo, content: e.target.value })} />
+                  onChange={(e) => setInputTodo({ ...inputTodo, content: e.target.value })}
+                  required />
                 <button type='submit'>+</button>
               </form>
             </div>
             <div className='li'>
-              <TodoList getRequest={getRequest} />
+              <TodoList getRequest={getRequest} handleRequest={handleRequest} />
             </div>
           </article>
         </article>
