@@ -5,19 +5,12 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "build": "rimraf dist && npx tsc",
+    "build": "rimraf ./js && npx tsc",
     "prestart": "npm run build",
     "start": "node js/index.js",
     "predev": "npm run build",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/index.js\"",
-    "add-builds": "git add server/js",
-    "ts.check": "tsc --project tsconfig.json"
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/index.js\""
   },
-  "pre-commit": [
-    "ts.check",
-    "build",
-    "add-builds"
-  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
