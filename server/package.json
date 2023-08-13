@@ -1,15 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "client api",
+  "description": "servert api",
   "type": "module",
-  "main": "index.js",
+  "main": "build/index.js",
   "scripts": {
     "build": "rimraf ./js && npx tsc",
     "prestart": "npm run build",
-    "start": "node js/index.js",
+    "start": "node js/src/index.js",
     "predev": "npm run build",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/src/index.js\"",
+    "vercel-build": "echo hello"
   },
   "author": "",
   "license": "MIT",

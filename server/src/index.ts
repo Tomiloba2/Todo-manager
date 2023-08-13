@@ -23,3 +23,5 @@ app.use(`/api`, router)
 app.listen(Port, () => {
     console.log(`server is running on Port ${Port} `);
 })
+
+export default app

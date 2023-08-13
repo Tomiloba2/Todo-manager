@@ -30,8 +30,8 @@ export const getTodo = async (req: Request, res: Response) => {
             where: {
                 authorId: req.params.id
             },
-            orderBy:{
-                createdAt:"asc"
+            orderBy: {
+                createdAt: "asc"
             }
         })
         return res.status(200).json({
