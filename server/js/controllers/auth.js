@@ -21,9 +21,8 @@ var __rest = (this && this.__rest) || function (s, e) {
 import prisma from "../libs/prisma.js";
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv';
-dotenv.config();
-const secretKey = process.env.JWT_SECRET || 'andkndsdeidwhdiwh';
+import 'dotenv/config.js';
+const secretKey = process.env.JWT_SECRET || "skckndkcdkcejdoedo mm kazklcd";
 //@desc create a auth
 //@path /auth/register
 export const Register = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

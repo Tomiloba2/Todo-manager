@@ -5,13 +5,19 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && npx tsc",
     "prestart": "npm run build",
     "start": "node js/index.js",
     "predev": "npm run build",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/index.js\""
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/index.js\"",
+    "add-builds": "git add server/js",
+    "ts.check": "tsc --project tsconfig.json"
   },
+  "pre-commit": [
+    "ts.check",
+    "build",
+    "add-builds"
+  ],
   "author": "",
   "license": "MIT",
   "dependencies": {
@@ -34,6 +40,7 @@
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/cors": "^2.8.13",
-    "@types/jsonwebtoken": "^9.0.2"
+    "@types/jsonwebtoken": "^9.0.2",
+    "pre-commit": "^1.2.2"
   }
 }

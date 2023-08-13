@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import 'dotenv/config.js';
 interface JwtRequest extends Request {
     id?: any;
 }

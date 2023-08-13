@@ -2,10 +2,9 @@ import prisma from "../libs/prisma.js"
 import bcrypt from 'bcrypt'
 import jwt, { Secret, JwtPayload } from 'jsonwebtoken'
 import { Request, Response, NextFunction } from 'express'
-import dotenv from 'dotenv'
-dotenv.config()
+import  'dotenv/config.js'
 
-const secretKey: Secret = process.env.JWT_SECRET || 'andkndsdeidwhdiwh'
+const secretKey: Secret = process.env.JWT_SECRET ||"skckndkcdkcejdoedo mm kazklcd" 
 interface JwtRequest extends Request {
     id?: any
 }
