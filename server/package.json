@@ -13,6 +13,9 @@
     "dev": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
     "vercel-build": "echo hello"
   },
+  "engines": {
+    "node":">=17 <19"
+  },
   "author": "",
   "license": "MIT",
   "dependencies": {

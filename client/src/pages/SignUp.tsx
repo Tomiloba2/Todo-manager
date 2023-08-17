@@ -47,7 +47,7 @@ export default function SignUp() {
         const register = async () => {
             setLoading(true)
             try {
-                const res = await axios.post(`https://todo-manager-seven.vercel.app/api/register`, inputVal)
+                const res = await axios.post(`https://todo-manager-swart.onrender.com/api/register`, inputVal)
                 if (res.data.message==='success') {
                     console.log(res.data);
                     navigate(`/login`)
