@@ -1,15 +1,16 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "servert api",
+  "description": "todo list server api",
   "type": "module",
-  "main": "build/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "rimraf ./js && npx tsc",
+    "install-server": "npm install",
+    "build": "rimraf ./dist && npx tsc",
     "prestart": "npm run build",
-    "start": "node js/src/index.js",
+    "start": "node dist/index.js",
     "predev": "npm run build",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon js/src/index.js\"",
+    "dev": "concurrently \"npx tsc --watch\" \"nodemon dist/index.js\"",
     "vercel-build": "echo hello"
   },
   "author": "",
