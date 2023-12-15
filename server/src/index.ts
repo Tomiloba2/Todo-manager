@@ -13,8 +13,8 @@ const Port = process.env.PORT
 const app = express()
 app.use(express.json())
 const corsOpt = {
-    origin: ['http://localhost:5173', "https://todo-manager-client.vercel.app/"],
-    method: ["GET", 'POST', "PUT", 'DELETE'],
+    origin: ["https://todo-manager-client.vercel.app/"],
+    method: ["GET", 'POST', "PUT", 'DELETE',`PATCH`],
     credentials: true
 }
 app.use(cors(corsOpt))
