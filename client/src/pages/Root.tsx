@@ -1,11 +1,8 @@
-import * as React from 'react';
 import { Outlet } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify'
 
-export interface IRootProps {
-}
 
-export function Root(props: IRootProps) {
+export function Root() {
     return (
         <div>
             <Outlet />
