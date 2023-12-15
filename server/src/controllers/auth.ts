@@ -61,13 +61,15 @@ export const Login = async (req: Request<{}, {}, LoginType>, res: Response, next
             password, createdAt,
             ...rest
         } = data
-        const token = jwt.sign(rest, secretKey, { expiresIn: '1d' })
-        return res.cookie("token", token, {
-            httpOnly: true
-        }).json({
-            message: 'success',
-            rest
-        })
+        const accesstoken = jwt.sign(rest, secretKey, { expiresIn: '10min' })
+        const refreshToken = jwt.sign(rest, secretKey, { expiresIn: '30d' })
+        return res
+            .cookie("accessToken", accesstoken, { httpOnly: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true })
+            .json({
+                message: 'success',
+                rest
+            })
     } catch (error) {
         console.log(error);
         next(error)
@@ -198,17 +200,26 @@ export const getSession = (req: JwtRequest, res: Response, next: NextFunction) =
 }
 
 export const verifyJwt = (req: JwtRequest, res: Response, next: NextFunction) => {
+    const accesstoken = req.cookies.accessToken
+    const refreshToken = req.cookies.refreshToken
     try {
-        const token = req.cookies.token
-        if (!token) {
+        if (!accesstoken && !refreshToken) {
             res.status(401)
             throw new Error("not authenticated");
         }
-        const { id } = jwt.verify(token, secretKey) as JwtPayload
+        const { id } = jwt.verify(accesstoken, secretKey) as JwtPayload
         req.id = id
         next()
     } catch (error) {
-        console.error(`${error}, ${req.originalUrl}`);
-        next(error)
+        if (!refreshToken) {
+            res.status(401).json({ msg: `not authenticated` })
+        }
+        try {
+            const rest = jwt.verify(refreshToken, secretKey) as JwtPayload
+            const accesstoken = jwt.sign(rest, secretKey, { expiresIn: `10min` })
+            return res.cookie(`accessToken`, accesstoken, { httpOnly: true }).send(`accesss token created`)
+        } catch (error) {
+            next(error)
+        }
     }
 }

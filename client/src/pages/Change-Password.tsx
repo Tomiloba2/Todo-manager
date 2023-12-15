@@ -6,11 +6,14 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useMutation } from '@tanstack/react-query';
 import instance from '../hookes/AxiosInstance';
 import { toast } from 'react-toastify'
+import { VisibilitySharp, VisibilityOffSharp } from '@mui/icons-material'
+import { useState } from 'react';
 
 
 export function ChangePassword() {
     const params = useParams()
     const { id } = params
+    const [passwordType, setPasswordType] = useState('password')
     const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors } } = useForm<changePasswordType>({
         resolver: zodResolver(changePasswordSchema)
@@ -49,14 +52,22 @@ export function ChangePassword() {
                         <section className='mt-2 mb-2'>
                             <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
                                 <div>
-                                    <div className='mt-1 mb-1'>
+                                    <div className='mt-1 mb-1 relative'>
                                         <input
-                                            type='password'
+                                            type={passwordType}
                                             placeholder="Enter a strong password"
                                             {...register('password')}
                                             className='rounded-xl w-64 mt-8 p-4 border-2 outline-none bg-gray-300 sm:w-64' />
-                                        {errors.password && <p className='text-red-800'>{errors.password.message}</p>}
+                                        <span
+                                            className='absolute right-1 top-1/2 sm:right-5 md:right-12 lg:right-32 xl:right-1/3 '>
+                                            {passwordType === 'password' ? (
+                                                < VisibilitySharp onClick={() => setPasswordType('text')} />
+                                            ) : (
+                                                <VisibilityOffSharp onClick={() => setPasswordType('password')} />
+                                            )}
+                                        </span>
                                     </div>
+                                    {errors.password && <p className='text-red-800'>{errors.password.message}</p>}
                                 </div>
                                 <section>
                                     <Button click={() => { }} type='submit'>

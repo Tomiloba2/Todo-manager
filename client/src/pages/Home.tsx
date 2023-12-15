@@ -24,9 +24,9 @@ export default function Home() {
                             Getting things done with TODO
                         </h3>
                         <p className='p-3 sm:p-1'>
-                            Lorem ipsum dolor sit, amet consectetur adipisicing elit. Voluptatibus unde soluta veniam amet eveniet doloremque
-                            aliquidvoluptatem quaerat rem saepe. Perferendis culpa officia nesciunt ratione temporibus,
-                            voluptatum aperiam at quis.
+                            Welcome to our Task Manager App. Streamline your productivty effortlessly
+                            With our user-friendly interface. You can quickly organize, priotize and monitor task. 
+                            Say hello to increased productivty 
                         </p>
                         <button className="bg-blue-800 hover:bg-blue-700 text-white rounded-xl w-80 mt-8 p-4 sm:border-2 sm:border-white sm:w-64 " 
                         onClick={handleClick}>

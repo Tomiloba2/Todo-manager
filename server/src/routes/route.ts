@@ -15,7 +15,15 @@ import {
     verifyJwt
 } from "../controllers/auth.js";
 import validate from "../middleware/validate.js";
-import { LoginSchema, SignUpSchema, TodoSchema, boardSchema, changePasswordSchema, completedTodoSchema, forgotPasswordSchema } from "../libs/schema.js";
+import {
+    LoginSchema,
+    SignUpSchema,
+    TodoSchema,
+    boardSchema,
+    changePasswordSchema,
+    completedTodoSchema,
+    forgotPasswordSchema
+} from "../libs/schema.js";
 import { completedTodo, createTodo, deleteTodo, getTodo } from "../controllers/todo.js";
 
 export const router = express.Router()

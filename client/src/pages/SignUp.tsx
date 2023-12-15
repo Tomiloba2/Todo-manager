@@ -8,10 +8,13 @@ import instance from '../hookes/AxiosInstance';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import LoadingSpinner from '../component/toast';
+import { VisibilitySharp, VisibilityOffSharp } from '@mui/icons-material'
+import { useState } from 'react';
 
 
 export default function SignUp() {
     const navigate = useNavigate()
+    const [passwordType, setPasswordType] = useState('password')
     const { register, handleSubmit, formState: { errors } } = useReactForm<signUpType>({
         resolver: zodResolver(SignUpSchema)
     })
@@ -62,14 +65,22 @@ export default function SignUp() {
                                     className='rounded-xl w-64 mt-2 p-4 border-2 outline-none bg-gray-300 sm:w-64' />
                                 {errors.email && <p className='text-red-800'>{errors.email.message}</p>}
                             </div>
-                            <div className=''>
+                            <div className='relative'>
                                 <input
-                                    type='password'
+                                    type={passwordType}
                                     placeholder="Enter a strong password"
                                     {...register('password')}
                                     className='rounded-xl w-64 mt-2 p-4 border-2 outline-none bg-gray-300 sm:w-64' />
-                                {errors.password && <p className='text-red-800'>{errors.password.message}</p>}
+                                <span
+                                    className='absolute right-1 top-1/3 sm:right-5 md:right-12 lg:right-32 xl:right-1/3 '>
+                                    {passwordType === 'password' ? (
+                                        < VisibilitySharp onClick={() => setPasswordType('text')} />
+                                    ) : (
+                                        <VisibilityOffSharp onClick={() => setPasswordType('password')} />
+                                    )}
+                                </span>
                             </div>
+                            {errors.password && <p className='text-red-800'>{errors.password.message}</p>}
 
                             <section>
                                 <Button type='submit' disabled={mutation.isPending}>

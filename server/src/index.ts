@@ -1,6 +1,6 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import cookieParser from "cookie-parser"
-import cors from "cors"
+import cors, { CorsOptions } from "cors"
 import "dotenv/config.js"
 import {
     router
@@ -9,21 +9,22 @@ import errorHandler from './middleware/errorHandler.js'
 import morgan from 'morgan'
 
 const Port = process.env.PORT
-
-const app = express()
-app.use(express.json())
-const corsOpt = {
-    origin: ["https://todo-manager-client.vercel.app/"],
-    method: ["GET", 'POST', "PUT", 'DELETE',`PATCH`],
+const corsOpt: CorsOptions = {
+    origin: ["https://todo-manager-client.vercel.app/", "http://localhost:5173/"],
+    methods: ["GET", 'POST', "PUT", 'DELETE', "PATCH"],
     credentials: true
 }
+
+const app = express()
 app.use(cors(corsOpt))
+app.use(express.json())
 app.use(cookieParser())
 app.use(morgan(`dev`))
 
 app.use(`/api`, router)
-app.get(`/`, () => {
-    console.log(`hello welcome to do list`);
+app.get(`/`, ( req: Request,res: Response) => {
+    console.log();
+    res.status(200).send(`hello welcome to do list`)
 })
 
 app.use(errorHandler)
