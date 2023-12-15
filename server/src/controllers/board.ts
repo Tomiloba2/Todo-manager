@@ -1,23 +1,24 @@
 import prisma from '../libs/prisma.js'
 import { NextFunction, Request, Response } from 'express'
-import { TodoType, completedTodoTYpe } from '../libs/schema.js'
+import { boardType } from '../libs/schema.js'
 
 
-//@desc create a todo
-//@path /todo
-export const createTodo = async (req: Request<{}, {}, TodoType>, res: Response, next: NextFunction) => {
+
+
+export const createBoard = async (req: Request<{}, {}, boardType>, res: Response, next: NextFunction) => {
     prisma.$connect
     try {
-        const data = await prisma.todolist.create({
+        const data = await prisma.board.create({
             data: {
                 content: req.body.content,
-                boardId: req.body.boardId,
+                authorId: req.body.authorId,
             }
         })
         return res.status(201).json({
             message: "success",
             rest: data
         })
+
     } catch (error) {
         console.log(error);
         next(error)
@@ -28,12 +29,12 @@ export const createTodo = async (req: Request<{}, {}, TodoType>, res: Response, 
 
 //@desc get all todo
 //@path /todo
-export const getTodo = async (req: Request, res: Response, next: NextFunction) => {
+export const getBoards = async (req: Request, res: Response, next: NextFunction) => {
     prisma.$connect
     try {
-        const data = await prisma.todolist.findMany({
+        const data = await prisma.board.findMany({
             where: {
-                boardId: req.params.id
+                authorId: req.params.id
             },
             orderBy: {
                 createdAt: "asc"
@@ -50,18 +51,19 @@ export const getTodo = async (req: Request, res: Response, next: NextFunction) =
         prisma.$disconnect
     }
 }
-//@desc delete a todo
+//@desc get all todo
 //@path /todo
-export const deleteTodo = async (req: Request, res: Response, next: NextFunction) => {
+export const getOneBoard = async (req: Request, res: Response, next: NextFunction) => {
     prisma.$connect
     try {
-        const data = await prisma.todolist.delete({
+        const data = await prisma.board.findFirstOrThrow({
             where: {
                 id: req.params.id
             }
         })
-        return res.status(204).json({
+        return res.status(200).json({
             message: "success",
+            rest: data
         })
     } catch (error) {
         console.log(error);
@@ -71,24 +73,24 @@ export const deleteTodo = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-//@desc completed todo
-//@path /todo/completed
-
-export const completedTodo = async (req: Request<{id:string},{},completedTodoTYpe>, res: Response, next: NextFunction) => {
+//@desc delete a todo
+//@path /todo
+export const deleteBoard = async (req: Request, res: Response, next: NextFunction) => {
     prisma.$connect
     try {
-        const { id } = req.params
-        const body = req.body
-        const data = await prisma.todolist.update({
+
+        const dependecies = await prisma.todolist.deleteMany({
             where: {
-                id
-            },
-            data: {
-                isComplete: body.isComplete === true ? false : true
+                boardId: req.params.id
             }
         })
-        return res.status(200).json({
-            message:`successfully completed`
+        const data = await prisma.board.delete({
+            where: {
+                id: req.params.id
+            }
+        })
+        return res.status(204).json({
+            message: "success",
         })
     } catch (error) {
         console.log(error);

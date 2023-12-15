@@ -2,7 +2,7 @@ import axios from "axios";
 
 const instance=axios.create({
     withCredentials:true,
-    baseURL:`https://todo-manager-swart.onrender.com/api`
+    baseURL:"http://localhost:2020/api/"
 })
 
 export default instance

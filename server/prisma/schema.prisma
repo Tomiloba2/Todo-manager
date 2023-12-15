@@ -10,18 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User{
-  id String @id @default(uuid())
-  name String
-  email String @unique
-  password String
-  createdAt DateTime @default(now())
-  todoList TodoList[]
+model User {
+  id        String    @id @default(uuid())
+  name      String
+  email     String    @unique
+  password  String
+  createdAt DateTime  @default(now())
+  token     String?   @unique
+  expiresIn DateTime?
+  Board     Board[]
 }
-model TodoList{
-  id String @id @default(uuid())
-  content String
-  createdAt DateTime @default(now())
-  author User @relation(fields: [authorId],references: [id])
-  authorId String
+
+model Board {
+  id        String     @id @default(uuid())
+  content   String
+  createdAt DateTime   @default(now())
+  author    User       @relation(fields: [authorId], references: [id])
+  authorId  String
+  todo      Todolist[]
+}
+
+model Todolist {
+  id         String   @id @default(uuid())
+  content    String
+  isComplete Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  Board      Board?   @relation(fields: [boardId], references: [id])
+  boardId    String?
 }

@@ -1,80 +1,83 @@
-import * as React from 'react';
-import teacher5 from '../assets/teacher5.webp'
-import InputField from '../component/InputField';
 import Button from '../component/Button';
-import { Link } from 'react-router-dom'
-import { useForm } from '../hookes/formState';
-import { useSession } from '../hookes/Session';
-import { useNavigate } from 'react-router-dom';
-import { ErrorHandler, LoadingSpinner } from '../component/AsyncState';
+import { Link, useNavigate } from 'react-router-dom'
+import { useForm, SubmitHandler } from 'react-hook-form'
+import LoadingSpinner from '../component/toast';
+import { LoginSchema, LoginType } from '../hookes/schema';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query'
+import instance from '../hookes/AxiosInstance';
+import { toast } from 'react-toastify';
+
 
 /*export interface ISignInProps {
 }*/
 
 export default function SignIn() {
-    const { inputVal, handleChange } = useForm()
     const navigate = useNavigate()
-    const fields = [
-        {
-            value: inputVal.email,
-            name: 'email',
-            type: 'email',
-            onChange: handleChange,
-            placeholder: 'Enter your email',
-            // onblur: errorHandlers.handleEmailError,
-            //error: inputErr.email
+    const { register, formState: { errors }, handleSubmit } = useForm<LoginType>({ resolver: zodResolver(LoginSchema) })
+    const mutation = useMutation({
+        mutationFn: (data: LoginType) => {
+            return instance.post(`/login`, data)
         },
-        {
-            value: inputVal.password,
-            name: 'password',
-            type: 'password',
-            onChange: handleChange,
-            placeholder: 'Enter password',
-            //onblur: errorHandlers.handlePasswordError,
-            //error: inputErr.password
+        onSuccess: () => {
+            toast.success(`login successful`)
+            navigate(`/board`)
         },
-    ]
-    const session = useSession()
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        session?.Login(inputVal)
-            .then(() => navigate('/main'))
-    }
-    return (
-        <main id='sign-in'>
-            <div>{session?.err.status && <ErrorHandler message={session?.err.message} />}</div>
-            <div>{session?.loading && <LoadingSpinner />}</div>
-            <section>
-                <h3>Welcome Back</h3>
-            </section>
-            <section>
-                <img src={teacher5} alt="" />
-            </section>
-            <section>
-                <form action="" method="post">
-                    {fields.map((item, id) => {
-                        return (
-                            <div key={id}>
-                                <InputField {...item} />
-                            </div>
-                        )
-                    })}
-                    <section>
-                        <Link to={``}>
-                            <p>forgot password</p>
-                        </Link>
-                    </section>
-                    <section>
-                        <Button click={handleSubmit} type='submit' disabled={session?.loading}>
-                            {session?.loading ? `Loading...` : `Sign in`}
-                        </Button>
-                    </section>
+        onError: (error) => {
+            toast.error(`${error.message}:invalid email or password`)
+        }
+    })
 
-                </form>
-            </section>
-            <section>
-                <p>Don't have an account? <Link to='/signUp'>Sign Up</Link></p>
-            </section>
+    const onSubmit: SubmitHandler<LoginType> = (data) => {
+        mutation.mutate(data)
+    }
+
+    return (
+        <main id='sign-in' className='bg-blue-800 max-w-screen min-h-screen flex flex-col justify-center align-middle text-center'>
+            <article className="container mx-auto px-4 relative">
+                <article className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  p-3 bg-white rounded-lg border-2 border-white shadow-lg  m-auto sm:p-5 sm:w-2/4'>
+                    {mutation.isPending ? <LoadingSpinner /> : null}
+                    <section className=''>
+                        <h3 className='mb-2 font-extrabold'>Welcome Back</h3>
+                    </section>
+                    <section>
+                        <form action="" method="post" onSubmit={handleSubmit(onSubmit)}>
+                            <div className=''>
+                                <input
+                                    type='email'
+                                    placeholder="Enter your email"
+                                    {...register('email')}
+                                    className='rounded-xl w-64 mt-8 p-4 border-2 outline-none bg-gray-300 sm:w-64' />
+                                {errors.email && <p className='text-red-800'>{errors.email.message}</p>}
+                            </div>
+                            <div className=''>
+                                <input
+                                    type='password'
+                                    placeholder="Enter a strong password"
+                                    {...register('password')}
+                                    className='rounded-xl w-64 mt-8 p-4 border-2 outline-none bg-gray-300 sm:w-64' />
+                                {errors.password && <p className='text-red-800'>{errors.password.message}</p>}
+                            </div>
+
+                            <section>
+                                <Link to={`/forgot-password`}>
+                                    <p className='text-blue-700'>forgot password</p>
+                                </Link>
+                            </section>
+                            <section>
+                                <Button type='submit' disabled={mutation.isPending}>
+                                    Sign in
+                                </Button>
+                            </section>
+
+                        </form>
+                    </section>
+                    <section>
+                        <p>Don't have an account? <Link to='/signUp' className='text-blue-600'>Sign Up</Link></p>
+                    </section>
+                </article>
+
+            </article>
         </main>
     );
 }

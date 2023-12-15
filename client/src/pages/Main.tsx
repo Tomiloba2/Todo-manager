@@ -1,87 +1,42 @@
-import * as React from 'react';
-import svg from '../assets/teacher5.webp'
-import { useClock } from '../hookes/Clock';
-import { useSession } from '../hookes/Session';
-//import axios from 'axios'
-import instance from '../hookes/AxiosInstance';
+import { useQuery } from '@tanstack/react-query';
 import { TodoList } from '../component/Todo';
-import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import instance from '../hookes/AxiosInstance';
+import { SMain } from '../types/interface';
 
 
 export default function Main() {
-  const session = useSession()
-  const navigate = useNavigate()
-  const [inputTodo, setInputTodo] = React.useState({
-    content: '',
-    authorId: session?.currentUser?.rest.id
-  })
-  const [getRequest, setGetRequest] = React.useState(false)
-  const handleRequest=()=>{
-    if (!getRequest) {
-      setGetRequest(true)
-    } else if (getRequest) {
-      setGetRequest(false)
+  const params = useParams()
+  const { id } = params
+
+  const getBoards = useQuery({
+    queryKey: [`boards`],
+    queryFn: async () => {
+      const res = await instance.get(`/a-board/${id}`)
+      return res.data as SMain
     }
-  }
-  const clock = useClock()
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault()
-    instance.post(`todo`, inputTodo)
-      .then((res) => {
-        console.log(res.data);
-        handleRequest()
-      }).catch(error => {
-        if (error?.response) {
-          console.log(error.response.data);
-        } else if (error.request) {
-          console.log(error.request);
-        } else {
-          console.log(error.message);
+  })
 
-        }
 
-      }).finally(() => {
-        setInputTodo({ ...inputTodo, content: `` })
-      })
-  }
-  const LogOut = () => {
-    session?.LogOut().then(() => navigate(`/`))
-  }
   return (
-    <section id='main'>
-      <section className='img-wrapper'>
-        <img src={svg} alt="avatar image" />
-        <p>{`welcome ${session?.currentUser?.rest.name} `}</p>
-      </section>
-      <section className='clock'>
-        {clock}
-        <button style={{
-          border: `1px solid green`,
-          color: `white`,
-          backgroundColor: `teal`
-        }} onClick={LogOut}>logout</button>
-      </section>
-      <section className='todo-section'>
-        <article>
-          <h4>Tasks list</h4>
-          <article className='card'>
-            <div>
-              <form className='add-todo' action="" method="post" onSubmit={handleSubmit}>
-                <input
-                  type="text"
-                  placeholder='Tasks list'
-                  value={inputTodo.content}
-                  onChange={(e) => setInputTodo({ ...inputTodo, content: e.target.value })}
-                  required />
-                <button type='submit'>+</button>
-              </form>
-            </div>
-            <div className='li'>
-              <TodoList getRequest={getRequest} handleRequest={handleRequest} />
-            </div>
-          </article>
-        </article>
-      </section>
+    <section id='main' className='container mx-auto px-4 flex flex-col gap-3'>
+      <h3 className='pt-4 font-extrabold text-2xl'>
+        {getBoards.isLoading || getBoards.data?.rest === undefined ? (
+          <div className='animate-bounce text-green-700'>....</div>
+        ) : (
+          <div>{getBoards.data?.rest.content.toUpperCase()}</div>
+        )}
+      </h3>
+      <article>
+        {getBoards.data === undefined ? null : (
+          <div className=' flex gap-5 max-sm:flex-col sm:max-xl:flex-col xl:flex-row justify-between align-middle h-full  '>
+            <TodoList board={getBoards?.data} title='To Do' />
+            <TodoList board={getBoards.data} title='in progress' />
+            <TodoList board={getBoards.data} title='Done' />
+          </div>
+        )}
+      </article>
     </section>
   );
 }
+
