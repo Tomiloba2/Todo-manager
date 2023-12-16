@@ -185,7 +185,7 @@ export const LogOut = async (req: Request, res: Response, next: NextFunction) =>
 }
 export const getSession = (req: JwtRequest, res: Response, next: NextFunction) => {
     try {
-        const token = req.cookies.token
+        const token = req.cookies.accessToken
         if (!token) {
             res.status(401)
             throw new Error("not authenticated");
@@ -203,7 +203,7 @@ export const verifyJwt = (req: JwtRequest, res: Response, next: NextFunction) =>
     const accesstoken = req.cookies.accessToken
     const refreshToken = req.cookies.refreshToken
     try {
-        if (!accesstoken && !refreshToken) {
+        if (!accesstoken || !refreshToken) {
             res.status(401)
             throw new Error("not authenticated");
         }
@@ -217,7 +217,7 @@ export const verifyJwt = (req: JwtRequest, res: Response, next: NextFunction) =>
         try {
             const rest = jwt.verify(refreshToken, secretKey) as JwtPayload
             const accesstoken = jwt.sign(rest, secretKey, { expiresIn: `10min` })
-            return res.cookie(`accessToken`, accesstoken, { httpOnly: true }).send(`accesss token created`)
+            return res.cookie(`accessToken`, accesstoken, { httpOnly: true }).send(`accesss token re-newed`)
         } catch (error) {
             next(error)
         }

@@ -10,7 +10,7 @@ import morgan from 'morgan'
 
 const Port = process.env.PORT
 const corsOpt: CorsOptions = {
-    origin: ["https://todo-manager-client.vercel.app/", "http://localhost:5173/"],
+    origin: [ "http://localhost:5173","https://todo-manager-client.vercel.app"],
     methods: ["GET", 'POST', "PUT", 'DELETE', "PATCH"],
     credentials: true
 }
@@ -22,7 +22,7 @@ app.use(cookieParser())
 app.use(morgan(`dev`))
 
 app.use(`/api`, router)
-app.get(`/`, ( req: Request,res: Response) => {
+app.get(`/`, (req: Request, res: Response) => {
     console.log();
     res.status(200).send(`hello welcome to do list`)
 })
