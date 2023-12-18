@@ -6,6 +6,8 @@ import 'dotenv/config.js'
 import { LoginType, changePasswordType, forgotPasswordType, signUpType } from "../libs/schema.js"
 import crypto from 'crypto'
 import transporter from "../libs/transporter.js"
+import dotenv from 'dotenv'
+dotenv.config()
 
 
 
@@ -64,8 +66,14 @@ export const Login = async (req: Request<{}, {}, LoginType>, res: Response, next
         const accesstoken = jwt.sign(rest, secretKey, { expiresIn: '10min' })
         const refreshToken = jwt.sign(rest, secretKey, { expiresIn: '30d' })
         return res
-            .cookie("accessToken", accesstoken, { httpOnly: true })
-            .cookie('refreshToken', refreshToken, { httpOnly: true })
+            .cookie("accessToken", accesstoken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production"
+            })
+            .cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production"
+            })
             .json({
                 message: 'success',
                 rest
@@ -176,7 +184,9 @@ export const ResetPassword = async (req: Request<{}, {}, changePasswordType>, re
 
 export const LogOut = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        res.clearCookie('token')
+        res
+        .clearCookie('accessToken')
+        .clearCookie(`refreshToken`)
         return res.status(204).json({ message: "logout successful" })
     } catch (error) {
         console.log(error);
@@ -217,7 +227,10 @@ export const verifyJwt = (req: JwtRequest, res: Response, next: NextFunction) =>
         try {
             const rest = jwt.verify(refreshToken, secretKey) as JwtPayload
             const accesstoken = jwt.sign(rest, secretKey, { expiresIn: `10min` })
-            return res.cookie(`accessToken`, accesstoken, { httpOnly: true }).send(`accesss token re-newed`)
+            return res.cookie(`accessToken`, accesstoken, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === "production"
+            }).send(`accesss token re-newed`)
         } catch (error) {
             next(error)
         }

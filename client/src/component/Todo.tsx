@@ -4,7 +4,7 @@ import { TodoType, todoSchema } from '../hookes/schema';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-toastify'
 import instance from '../hookes/AxiosInstance'
-import { SMain, REST } from '../types/interface';
+import { SMain, REST, IMain } from '../types/interface';
 
 interface ITodo {
     title: 'To Do' | "in progress" | "Done";
@@ -21,7 +21,7 @@ export function TodoList(props: ITodo) {
     const queryClient = useQueryClient()
     const getTodo = useQuery({
         queryKey: [`todos`],
-        queryFn: async () => {
+        queryFn: async (): Promise<IMain> => {
             const res = await instance.get(`/todo/${board.rest.id}`)
             return res.data
         }
@@ -68,10 +68,10 @@ export function TodoList(props: ITodo) {
     })
 
     const list = getTodo
-    const done = list.data !== undefined && list.data.rest.filter((item: REST) => {
+    const done = list.data?.rest.filter((item: REST) => {
         return item.isComplete === true
     })
-    const inProgress = list.data !== undefined && list.data.rest.filter((item: REST) => {
+    const inProgress = list.data?.rest.filter((item: REST) => {
         return item.isComplete === false
     })
 
@@ -89,7 +89,7 @@ export function TodoList(props: ITodo) {
                     </form>
                 ) : null}
                 <div className='relative'>
-                    {list.isLoading || list.data === undefined ? (
+                    {list.isLoading && list.data?.rest === undefined ? (
                         <div className='w-full relative mt-2 animate-pulse'>
                             <div className='bg-gray-400 border-2  p-2'></div>
                             <div className='bg-gray-400 border-2  p-2'></div>
@@ -98,11 +98,11 @@ export function TodoList(props: ITodo) {
                         </div>
                     ) : (
                         <div>
-                            {list.data.rest.length !== 0 ? (
+                            {list.data?.rest.length !== 0 ? (
                                 <ul className='w-full'>
                                     {title === 'To Do' ? (
                                         <>
-                                            {list.data.rest.map((item: REST) => {
+                                            {list.data?.rest.map((item: REST) => {
                                                 return (
                                                     <li key={item.id} className='w-full relative mt-2'>
                                                         <div className='border-gray-200 border-2  p-2'>{item.content}</div>
@@ -127,7 +127,7 @@ export function TodoList(props: ITodo) {
                                         <>
                                             {title === 'in progress' ? (
                                                 <>
-                                                    {inProgress.map((item: REST) => {
+                                                    {inProgress?.map((item: REST) => {
                                                         return (
                                                             <li key={item.id} className='w-full relative mt-2'>
                                                                 <div className='border-gray-200 border-2  p-2'>{item.content}</div>
@@ -142,7 +142,7 @@ export function TodoList(props: ITodo) {
                                                 </>
                                             ) : (
                                                 <>
-                                                    {done.length === 0 && (
+                                                    {done?.length === 0 && (
                                                         <div>
                                                             <div className='flex justify-center align-middle h-full'>
                                                                 <h2
@@ -151,7 +151,7 @@ export function TodoList(props: ITodo) {
                                                             </div>
                                                         </div>
                                                     )}
-                                                    {done.map((item: REST) => {
+                                                    {done?.map((item: REST) => {
                                                         return (
                                                             <li key={item.id} className='w-full relative mt-2'>
                                                                 <div className='border-gray-200 border-2  p-2'>{item.content}</div>

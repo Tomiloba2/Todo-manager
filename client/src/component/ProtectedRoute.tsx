@@ -20,7 +20,7 @@ export function ProtectedRoute() {
             logoutQuery.refetch()
             navigate(`/`)
             toast.success(`logout successful`)
-        }else{
+        } else {
             toast.error(`logout unsuccessful`)
         }
     }
@@ -41,23 +41,20 @@ export function ProtectedRoute() {
             </main>
         )
     }
+
     return (
         <div>
             <nav className="bg-blue-800">
-                {isloading ? (
-                    <div className="text-right text-white p-4  uppercase">
-
-                    </div>
-                ) : (
+                {sessionData && sessionData.name !== undefined &&
                     <div className="flex gap-8 justify-end align-middle h-full  text-white p-3">
                         <p className="uppercase">
-                             welcome <span className="underline text-orange-500">{sessionData.name && sessionData.name}</span> 
+                            welcome <span className="underline text-orange-500">{sessionData.name && sessionData.name}</span>
                         </p>
                         <button type="button"
                             onClick={logout}
                             className="bg-white rounded-md border-2 border-blue-400 text-black p-1">logout</button>
                     </div>
-                )}
+                }
             </nav>
             <Outlet />
         </div>

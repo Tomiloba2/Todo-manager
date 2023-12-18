@@ -30,7 +30,7 @@ export const router = express.Router()
 //authentication
 router.route("/register").post(validate(SignUpSchema), Register)
 router.route(`/login`).post(validate(LoginSchema), Login)
-router.route(`/sessionData`).get(getSession)
+router.route(`/sessionData`).get(verifyJwt, getSession)
 router.route(`/logout`).get(LogOut)
 router.route(`/reset-password`).patch(validate(changePasswordSchema), ResetPassword)
 router.route(`/forgot-password`).post(validate(forgotPasswordSchema), forgoPassword)

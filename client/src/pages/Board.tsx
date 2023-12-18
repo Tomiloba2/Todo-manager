@@ -20,9 +20,9 @@ export function Board() {
 
     const getBoards = useQuery({
         queryKey: [`boards`],
-        queryFn: async () => {
+        queryFn: async (): Promise<REST[]> => {
             const res = await instance.get(`/board/${sessionData.id}`)
-            return res.data.rest as REST[]
+            return res.data.rest
         }
     })
 
@@ -94,7 +94,7 @@ export function Board() {
                             </div>
                         ) : (
                             <article id="board-list" className='flex gap-4 pt-2 justify-start flex-wrap  align-start'>
-                                {boards.data.map((item: REST) => {
+                                {Array.isArray(boards.data) && boards.data.map((item: REST) => {
                                     return (
                                         <div key={item.id} className='p-10 relative  shadow-xl w-64 h-32 border-y-2 rounded-lg'>
                                             <Link to={`/main/${item.id}`}>
